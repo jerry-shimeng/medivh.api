@@ -1,0 +1,93 @@
+package rwconnection
+import (
+	"net"
+	"bufio"
+	"fmt"
+	"strings"
+"rwapi/models"
+	"encoding/json"
+	"errors"
+)
+
+type ConnectionModel struct {
+	ConnObj *net.TCPConn
+	ConnTime int64
+	ConnAddr string
+	ConnId string
+	ReturnMessage chan string
+	Alias,AppKey string
+}
+
+func (this *ConnectionModel)Send(cmd string){
+	if this.ConnObj == nil {
+		this.ReturnMessage <- "connection is end"
+	}
+	writer := bufio.NewWriter(this.ConnObj)
+	writer.WriteString(cmd)
+	writer.Flush()
+}
+
+func (this *ConnectionModel)Receive()*string{
+	s := <-this.ReturnMessage
+	return &s
+}
+
+func  (this *ConnectionModel)BeginAccept(){
+	reader := bufio.NewReader(this.ConnObj)
+	writer := bufio.NewWriter(this.ConnObj)
+	var count = 0
+
+	defer func() {
+		RemoveConn(this.ConnObj)
+		writer.Write([]byte("end\n"))
+		writer.Flush()
+		this.ConnObj.Close()
+		this.ConnObj = nil
+		close(this.ReturnMessage)
+
+	}()
+
+	for {
+		msg, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		//收到消息后，将消息发送到异步通道处理
+		//fmt.Println(msg)
+		if msg != "o\n" {
+			//第一次设置别名
+			if count == 0 {
+				count = 1
+				err = this.setClientInfo(strings.Trim(msg,"\n"))
+				if err != nil {
+					fmt.Println("[ConnectionModel.BeginAccept]",err.Error())
+					return
+				}
+			}else {
+				//处理并反馈消息
+				this.ReturnMessage <- msg
+			}
+		}
+		//消息反馈
+		writer.Write([]byte("o\n"))
+		writer.Flush()
+	}
+}
+
+
+func(this *ConnectionModel)setClientInfo(msg string)error{
+	if len(msg) == 0 {
+		return errors.New("msg is null")
+	}
+	var model = new(models.ClientInfo)
+	err := json.Unmarshal([]byte(msg),model)
+	if err != nil {
+		return err
+	}
+	this.Alias = model.AppName
+	this.AppKey = model.AppKey
+	//验证key可用性
+
+	return nil
+}
