@@ -6,7 +6,7 @@ type CmdModel struct {
 	Level int
 	Module int `json:"ModuleType"`
 	Counter int `json:"CounterType"`
-
+	Extend interface{}
 }
 
 func (this *CmdModel)ToJson()string{

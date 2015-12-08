@@ -14,6 +14,8 @@ func BeginRun()  {
 
 func SystemInfo(id string)*models.ReturnModel{
 	var cmd = new(rwcommand.Cmd)
+	//id为appkey，需要将其转换为objectid
+	id = rwconnection.GetConnDict(id)
 
 	var cmdModel = new(models.CmdModel)
 	cmdModel.Module=2
@@ -40,6 +42,10 @@ func StatusInfo()*models.ReturnModel{
 func Exec( id string ,cmdModel *models.CmdModel)*models.ReturnModel{
 	//fmt.Printf("\n[XX] %v\n",*cmdModel)
 	var cmd = new(rwcommand.Cmd)
+
+	//id为appkey，需要将其转换为objectid
+	id = rwconnection.GetConnDict(id)
+
 	d,err := cmd.Process(id ,cmdModel)
 	model := new(models.ReturnModel)
 	if err!=nil {

@@ -15,7 +15,7 @@ type ConnectionModel struct {
 	ConnAddr string
 	ConnId string
 	ReturnMessage chan string
-	Alias,AppKey string
+	Alias,AppKey,AppSecret string
 }
 
 func (this *ConnectionModel)Send(cmd string){
@@ -44,7 +44,7 @@ func  (this *ConnectionModel)BeginAccept(){
 		this.ConnObj.Close()
 		this.ConnObj = nil
 		close(this.ReturnMessage)
-
+		RemoveConnDict(this.AppKey)
 	}()
 
 	for {
@@ -55,7 +55,7 @@ func  (this *ConnectionModel)BeginAccept(){
 		}
 		//收到消息后，将消息发送到异步通道处理
 		//fmt.Println(msg)
-		if msg != "o\n" {
+		if msg != "o\n" &&  msg != "0\n"{
 			//第一次设置别名
 			if count == 0 {
 				count = 1
@@ -87,7 +87,10 @@ func(this *ConnectionModel)setClientInfo(msg string)error{
 	}
 	this.Alias = model.AppName
 	this.AppKey = model.AppKey
-	//验证key可用性
+	this.AppSecret = model.AppSecret
+	//验证key可用性以及是否重复 和 AppSecret是否正确
+	//to do list
 
+	SetConnDict(this.ConnId,this.AppKey);
 	return nil
 }

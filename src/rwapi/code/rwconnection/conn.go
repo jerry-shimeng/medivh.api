@@ -5,7 +5,8 @@ import (
 	"net"
 	"time"
 	"rwapi/common"
-"rwapi/models"
+	"rwapi/models"
+	"fmt"
 )
 
 var ConnPool map[string]*ConnectionModel
@@ -50,10 +51,11 @@ func GetAllAddr()*[]models.ConnViewModel{
 		temp := models.ConnViewModel{}
 		temp.ConnAddr = value.ConnAddr
 		temp.ConnTime = value.ConnTime
-		temp.ConnId = value.ConnId
+		temp.ConnId = value.AppKey
 		temp.Alias = value.Alias
 		list = append(list,temp)
 	}
+	fmt.Printf("\n[list] %#v\n",list)
 
 	return &list
 }

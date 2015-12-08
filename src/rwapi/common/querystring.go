@@ -15,6 +15,7 @@ func ConvertQueryToCmd(input *context.BeegoInput) *models.CmdModel {
 	model.Mark = input.Query("mark")
 	model.Operate = input.Query("operate")
 	model.Module,_ =strconv.Atoi(input.Query("module"))
+	model.Extend = input.Query("extend")
 
 	fmt.Printf("%#v",model)
 	return model
