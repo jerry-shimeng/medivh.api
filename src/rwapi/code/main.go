@@ -1,57 +1,47 @@
 package code
+
 import (
 	"rwapi/code/rwnetwork"
 	"rwapi/code/rwcommand"
 	"rwapi/code/rwconnection"
 	"rwapi/models"
-	"fmt"
+	"rwapi/code/rwcache"
 )
 
-func BeginRun()  {
+func BeginRun() {
 	rwnetwork.Run()
 }
 
 
-func SystemInfo(id string)*models.ReturnModel{
-	var cmd = new(rwcommand.Cmd)
-	//id为appkey，需要将其转换为objectid
-	id = rwconnection.GetConnDict(id)
+func SystemInfo(id string) *models.ReturnModel {
 
-	var cmdModel = new(models.CmdModel)
-	cmdModel.Module=2
-	cmdModel.Alias ="sys"
-	cmdModel.Counter=0
 	model := new(models.ReturnModel)
-	d,err := cmd.Process(id ,cmdModel)
-
-	if err!=nil {
-		model.Code = -1
-	}
-	model.Data = d
-	model.Message = fmt.Sprint(err)
+	model.Data = ""
+	model.Message = ""
 	return model
 }
 
-func StatusInfo()*models.ReturnModel{
+func StatusInfo() *models.ReturnModel {
 	d := rwconnection.GetAllAddr()
 	model := new(models.ReturnModel)
 	model.Data = d
 	return model
 }
 
-func Exec( id string ,cmdModel *models.CmdModel)*models.ReturnModel{
-	//fmt.Printf("\n[XX] %v\n",*cmdModel)
+func AppKeyInfo()*models.ReturnModel  {
+	d:=rwcache.GetAllKey()
+	model := new(models.ReturnModel)
+	model.Data = d
+	return model
+}
+
+func Exec(appkey string) *models.ReturnModel {
 	var cmd = new(rwcommand.Cmd)
 
-	//id为appkey，需要将其转换为objectid
-	id = rwconnection.GetConnDict(id)
+	var d = cmd.Process(appkey)
 
-	d,err := cmd.Process(id ,cmdModel)
 	model := new(models.ReturnModel)
-	if err!=nil {
-		model.Code = -1
-	}
 	model.Data = d
-	model.Message = fmt.Sprint(err)
+	model.Message = ""
 	return model
 }

@@ -25,13 +25,6 @@ var machineId = readMachineId()
 //
 // http://www.mongodb.org/display/DOCS/Object+IDs
 type ObjectId string
-
-func main() {
-	objID := NewObjectId()
-	fmt.Println(objID)
-	fmt.Println(objID.Hex())
-}
-
 // readMachineId generates machine id and puts it into the machineId global
 // variable. If this function fails to get the hostname, it will cause
 // a runtime error.

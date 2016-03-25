@@ -2,7 +2,6 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"rwapi/code"
-	"rwapi/common"
 )
 
 type CounterController struct {
@@ -13,8 +12,7 @@ type CounterController struct {
 func (this *CounterController)GetCounter(){
 	params := this.Ctx.Input.Params
 	id := params[":id"]
-	model := common.ConvertQueryToCmd(this.Ctx.Input)
-	s := code.Exec(id,model)
+	s := code.Exec(id)
 	if s != nil {
 		this.Data["json"] = *s
 	}else {

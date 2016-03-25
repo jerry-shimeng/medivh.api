@@ -1,14 +1,12 @@
 package main
 
 import (
-	_ "rwapi/docs"
 	_ "rwapi/routers"
-	"rwapi/code"
 	"github.com/astaxie/beego"
+	"rwapi/code"
 )
 
 func main() {
-
 	//启动监视模块
 	go code.BeginRun()
 
@@ -17,6 +15,4 @@ func main() {
 		beego.StaticDir["/swagger"] = "swagger"
 	}
 	beego.Run()
-
-
 }

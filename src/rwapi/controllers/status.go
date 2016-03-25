@@ -17,3 +17,13 @@ func (this *StatusControllers)GetAll(){
 	}
 	this.ServeJson()
 }
+
+//连接Appkey状态
+//@router /keys [get]
+func (this *StatusControllers)GetAllKey()  {
+	r := code.AppKeyInfo()
+	if r != nil {
+		this.Data["json"] = *r
+	}
+	this.ServeJson()
+}

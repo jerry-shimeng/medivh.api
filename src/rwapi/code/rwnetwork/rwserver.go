@@ -11,18 +11,16 @@ import (
 )
 
 func Run() {
-	fmt.Println("listener server is running")
+	fmt.Println("====listener server is running====")
 	start()
 }
-
-//var connObj *net.TCPConn
-//var receiveMsg chan string
 
 
 func start() {
  	var tcpAddr *net.TCPAddr
-	serverAddr := beego.AppConfig.String("host")
-	tcpAddr, err := net.ResolveTCPAddr("tcp", serverAddr)
+	serverAddr,_ := beego.AppConfig.Int("port")
+
+	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("0.0.0.0:%d",serverAddr))
 	tcpListener, err := net.ListenTCP("tcp", tcpAddr)
 
 	if err != nil {
@@ -38,52 +36,4 @@ func start() {
 	}
 }
 
-//func Accept(tcpConn *net.TCPConn) {
-//	reader := bufio.NewReader(tcpConn)
-//	writer := bufio.NewWriter(tcpConn)
-//
-//	for {
-//		msg, err := reader.ReadString('\n')
-//		if err != nil {
-//			fmt.Println(err)
-//			rwconnection.RemoveConn(tcpConn)
-//			tcpConn.Close()
-//			break
-//		}
-//		//收到消息后，将消息发送到异步通道处理
-//		//fmt.Println(msg)
-//		if msg != "o\n" {
-//			//处理并反馈消息
-//			receiveMsg <- msg
-//		}
-//		//消息反馈
-//		writer.Write([]byte("o\n"))
-//		writer.Flush()
-//	}
-//}
-//
-////发送命令
-//func SendCmd(s *string,tcpConn *net.TCPConn)error{
-//	if s == nil {
-//		return errors.New("cmd is nil")
-//	}
-//	if connObj == nil {
-//		return errors.New("connection is error")
-//	}
-//	writer := bufio.NewWriter(tcpConn)
-//	writer.Write([]byte(*s))
-//	return writer.Flush()
-//}
-//
-//func Receive()*string{
-//
-//	t1 := time.After(10*time.Second)
-//
-//	select {
-//		case s :=  <-receiveMsg:
-//			return &s
-//		case <-t1:
-//			return nil
-//	}
-//}
 
